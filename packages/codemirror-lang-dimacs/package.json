@@ -1,13 +1,13 @@
 {
-  "name": "codemirror-lang-tptp",
-  "version": "0.1.1",
+  "name": "codemirror-lang-dimacs",
+  "version": "0.1.0",
   "keywords": [
     "codemirror",
     "lezer",
-    "tptp",
-    "theorem-proving"
+    "dimacs",
+    "sat"
   ],
-  "description": "TPTP language support for CodeMirror",
+  "description": "DIMACS CNF language support for CodeMirror, as read by CaDiCaL",
   "scripts": {
     "test": "mocha test/test.js test/fixtures.js",
     "build": "rollup -c && tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@lezer/generator": "^1.0.0",
     "@rollup/plugin-typescript": "^12.1.4",
-    "@types/node": "^24.1.0",
+    "@types/node": "^26.0.0",
     "mocha": "^11.7.1",
     "rollup": "^4.45.1",
     "tslib": "^2.8.1",
@@ -39,11 +39,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jcschuster/lang-tptp.git",
-    "directory": "packages/codemirror-lang-tptp"
+    "url": "git+https://github.com/jcschuster/lang-dimacs.git",
+    "directory": "packages/codemirror-lang-dimacs"
   },
-  "license": "MIT",
-  "tptp": {
-    "bnf": "9.3.1.6"
-  }
+  "license": "MIT"
 }

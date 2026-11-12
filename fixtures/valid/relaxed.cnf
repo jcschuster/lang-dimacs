@@ -1,0 +1,9 @@
+
+  	
+ c leading white space before a header comment
+c
+p	cnf  7   4  
+1 -2 0c comment directly after a literal
+007 -0 c leading zeros, and -0 ends a clause
+3	-4
+  5 0 6 -7 0

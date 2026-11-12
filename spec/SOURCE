@@ -1,0 +1,10 @@
+title:    CaDiCaL 3.0.1, src/parse.cpp (DIMACS and solution parser)
+url:      https://raw.githubusercontent.com/arminbiere/cadical/c60730422e758ef1cebe7aeddf2dda31c996bf04/src/parse.cpp
+tag:      rel-3.0.1 (commit c60730422e758ef1cebe7aeddf2dda31c996bf04), the version nixpkgs packages as `cadical`
+sha256:   8c20aee01f27dfb6e9a447cad9e1c81faea5ed1e5187c77786240dac0e2721e8
+fetched:  2026-11-12
+also:     src/cadical.cpp (command line: `p inccnf`, `-r`, status lines, exit codes) and
+          src/solver.cpp (`set_long_option`: only `--name[=value]` takes effect) at the same tag
+compared: src/parse.cpp of CaDiCaL 2.2.1 as vendored in rustsat-cadical 0.7.5
+          (sha256 fc94a433cedbb02e0eabb54fada05b2fb0a2117492c449df7357b28226de74e5):
+          differs only in variable declaration under --force and signal checks, not in syntax

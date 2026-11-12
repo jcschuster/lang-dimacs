@@ -1,0 +1,8 @@
+lang-dimacs is licensed under the MIT licence in LICENSE.
+
+The Lezer grammar (dimacs.grammar) and the tests are written by hand. What they accept
+was worked out by reading the DIMACS and solution parser of CaDiCaL
+(https://github.com/arminbiere/cadical, src/parse.cpp; version and checksum in
+spec/SOURCE of the lang-dimacs repository), which is MIT-licensed, Copyright (c) Armin
+Biere and others. No CaDiCaL code is copied. CaDiCaL itself is used only as a test
+oracle and is not distributed.
