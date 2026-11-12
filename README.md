@@ -28,14 +28,15 @@ containers; it has no `cadical`.
 
 ## Releasing
 
-A release is a merged pull request labelled `release`: `release.yml` then publishes the
-package to npm and creates the GitHub release `vX.Y.Z`, using the version's CHANGELOG
-section as release notes. To prepare one: run `.github/scripts/version.sh X.Y.Z`, add a
+A release is a merged pull request labelled `release`: `release.yml` then stages the
+package on npm and creates the GitHub release `vX.Y.Z`, using the version's CHANGELOG
+section as release notes. The version goes live once it is approved with 2FA on
+npmjs.com (Staged Packages). To prepare one: run `.github/scripts/version.sh X.Y.Z`, add a
 `## [X.Y.Z] - date` section to `CHANGELOG.md`, open a pull request and label it
 `release`.
 
-npm publishing uses trusted publishing: the package trusts `release.yml` of this
-repository, so no npm token is stored.
+npm staging uses trusted publishing: the package trusts `release.yml` of this
+repository for `npm stage publish`, so no npm token is stored.
 
 ## Licence
 
