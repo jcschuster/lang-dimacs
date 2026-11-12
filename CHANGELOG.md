@@ -7,6 +7,8 @@ exposes: node names and the exported JavaScript API.
 
 ## [Unreleased]
 
+## [0.1] - 2026-11-12
+
 ### Added
 
 - `codemirror-lang-dimacs`: a CodeMirror 6 language (Lezer parser) for `p cnf` and
