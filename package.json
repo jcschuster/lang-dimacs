@@ -1,0 +1,23 @@
+{
+  "name": "lang-dimacs",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Editor language support for DIMACS CNF as CaDiCaL reads it",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r test",
+    "generate": "echo 'nothing to generate: the grammar is hand-written'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.14.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.14.0",
+  "type": "module"
+}

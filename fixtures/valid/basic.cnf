@@ -1,0 +1,4 @@
+c Two clauses over three variables.
+p cnf 3 2
+1 -2 0
+2 3 0

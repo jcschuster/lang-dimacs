@@ -1,0 +1,201 @@
+# Header comments before the problem line (fact 1)
+
+c a comment
+c
+cno space needed
+p cnf 3 2
+1 -2 0
+2 3 0
+
+==>
+
+Dimacs(LineComment, LineComment, LineComment,
+  ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, NegativeLiteral, Terminator),
+  Clause(PositiveLiteral, PositiveLiteral, Terminator))
+
+# An embedded option is an ordinary comment (fact 2)
+
+c --seed=7
+p cnf 1 1
+1 0
+
+==>
+
+Dimacs(LineComment, ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, Terminator))
+
+# Strict problem line (fact 3)
+
+p cnf 3 2
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number))
+
+# Relaxed problem line with tabs and runs of spaces (fact 3)
+
+p	cnf  3   2	
+1 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, Terminator))
+
+# Relaxed problem line split over lines (fact 3)
+
+p cnf
+3
+2
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number))
+
+# Incremental problem line has no numbers (fact 3)
+
+p inccnf
+1 2 0
+
+==>
+
+Dimacs(ProblemLine(p, Format), Clause(PositiveLiteral, PositiveLiteral, Terminator))
+
+# Clauses span lines and share lines (fact 4)
+
+p cnf 4 3
+1 -2
+3 0 -4 0 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, NegativeLiteral, PositiveLiteral, Terminator),
+  Clause(NegativeLiteral, Terminator),
+  Clause(Terminator))
+
+# Leading zeros: 007 is 7, -0 and 00 end a clause (fact 4)
+
+p cnf 7 3
+007 -0 00 -007 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, Terminator),
+  Clause(Terminator),
+  Clause(NegativeLiteral, Terminator))
+
+# Comments between tokens in the body (fact 5)
+
+p cnf 2 1
+1 c one
+-2 c two
+0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, LineComment, NegativeLiteral, LineComment, Terminator))
+
+# Comment directly after a literal (fact 5)
+
+p cnf 2 1
+1 -2 0c note
+-1c note
+0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, NegativeLiteral, Terminator), LineComment,
+  Clause(NegativeLiteral, LineComment, Terminator))
+
+# Cubes after the clauses (fact 6)
+
+p inccnf
+1 2 0
+a 1 -2 0 a 0
+a -1 0
+
+==>
+
+Dimacs(ProblemLine(p, Format),
+  Clause(PositiveLiteral, PositiveLiteral, Terminator),
+  Cube(CubeMarker, PositiveLiteral, NegativeLiteral, Terminator),
+  Cube(CubeMarker, Terminator),
+  Cube(CubeMarker, NegativeLiteral, Terminator))
+
+# Cubes are accepted after p cnf too (fact 7 is left to a linter)
+
+p cnf 1 1
+1 0
+a 1 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, Terminator),
+  Cube(CubeMarker, PositiveLiteral, Terminator))
+
+# Header counts are not checked (fact 8)
+
+p cnf 1 5
+1 2 3 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, PositiveLiteral, PositiveLiteral, Terminator))
+
+# Error: a minus sign without a digit
+
+p cnf 2 1
+1 - 2 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, ⚠, PositiveLiteral, Terminator))
+
+# Error: last clause without 0
+
+p cnf 2 1
+1 2
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, PositiveLiteral, ⚠))
+
+# Error: no problem line
+
+1 2 0
+
+==>
+
+Dimacs(⚠(PositiveLiteral), ⚠(PositiveLiteral), ⚠(Terminator))
+
+# Error: unknown format
+
+p sat 3
+
+==>
+
+Dimacs(ProblemLine(p, ⚠(s)), Cube(CubeMarker, ⚠, PositiveLiteral, ⚠))
+
+# Error: two a in a row
+
+p inccnf
+a a 1 0
+
+==>
+
+Dimacs(ProblemLine(p, Format), Cube(CubeMarker, ⚠), Cube(CubeMarker, PositiveLiteral, Terminator))
+
+# Error: a clause after a cube
+
+p inccnf
+a 1 0
+1 0
+
+==>
+
+Dimacs(ProblemLine(p, Format), Cube(CubeMarker, PositiveLiteral, Terminator), Cube(⚠, PositiveLiteral, Terminator))

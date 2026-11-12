@@ -1,0 +1,46 @@
+# Solution with comments and value lines (fact 9) {"top": "Solution"}
+
+c solved by cadical
+s SATISFIABLE
+v 1 -2
+v -3 0
+
+==>
+
+Solution(LineComment, StatusLine(s, Status),
+  ValueLine(v, PositiveLiteral, NegativeLiteral),
+  ValueLine(v, NegativeLiteral, Terminator))
+
+# Status lines of solver output {"top": "Solution"}
+
+s UNSATISFIABLE
+
+==>
+
+Solution(StatusLine(s, Status))
+
+# Unknown status {"top": "Solution"}
+
+s UNKNOWN
+
+==>
+
+Solution(StatusLine(s, Status))
+
+# Error: two status lines {"top": "Solution"}
+
+s SATISFIABLE
+s UNSATISFIABLE
+
+==>
+
+Solution(StatusLine(s, Status), ⚠(s), ⚠(Status))
+
+# Error: values before the status line {"top": "Solution"}
+
+v 1 0
+s SATISFIABLE
+
+==>
+
+Solution(⚠(v), ⚠(PositiveLiteral), ⚠(Terminator), StatusLine(s, Status))

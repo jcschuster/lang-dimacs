@@ -1,0 +1,7 @@
+c Header comments carry options from the first '-' on.
+c --seed=42
+c --verbose=0
+p cnf 2 2
+1 2 0
+-1 0
+c Body comments are not scanned for options: --seed=1

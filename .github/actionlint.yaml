@@ -1,0 +1,6 @@
+# release.yml passes a single-quoted script to `nix develop --command bash -c`, to be
+# expanded inside the devshell.
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      - "SC2016:"

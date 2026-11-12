@@ -1,0 +1,48 @@
+@top Dimacs { ProblemLine Clause* Cube* }
+
+@top Solution { StatusLine ValueLine* }
+
+@skip { space | LineComment }
+
+// No comments inside the problem line: there a `c` starts `cnf`.
+@skip { space } {
+  ProblemLine { "p" (cnfFormat Number Number | inccnfFormat) }
+}
+
+Clause { literal* Terminator }
+
+Cube { CubeMarker literal* Terminator }
+
+StatusLine { "s" Status }
+
+ValueLine { "v" literal* Terminator? }
+
+literal { PositiveLiteral | NegativeLiteral }
+
+@tokens {
+  @precedence { PositiveLiteral, NegativeLiteral, Terminator }
+
+  space { $[ \t\n\r]+ }
+
+  LineComment { "c" ![\n]* }
+
+  Number { $[0-9]+ }
+
+  PositiveLiteral { "0"* $[1-9] $[0-9]* }
+
+  NegativeLiteral { "-" "0"* $[1-9] $[0-9]* }
+
+  Terminator { "-"? "0"+ }
+
+  CubeMarker { "a" }
+
+  Status { "SATISFIABLE" | "UNSATISFIABLE" | "UNKNOWN" }
+
+  cnfFormat[@name=Format] { "cnf" }
+
+  inccnfFormat[@name=Format] { "inccnf" }
+
+  "p" "s" "v"
+}
+
+@external propSource dimacsHighlighting from "./highlight"
