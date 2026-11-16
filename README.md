@@ -1,7 +1,7 @@
 # lang-dimacs
 
-Editor language support for DIMACS CNF as [CaDiCaL](https://github.com/arminbiere/cadical)
-reads it.
+Editor language support for DIMACS CNF and its SAT-solver dialects: iCNF, QDIMACS,
+DQDIMACS, WCNF, KNF and XOR clauses.
 
 | Package | For |
 |---|---|
@@ -19,7 +19,8 @@ pnpm install
 ```
 
 The grammar is hand-written; `pnpm generate` has nothing to do. `spec/SOURCE` records
-the CaDiCaL source the grammar was checked against. `fixtures/` holds inputs that
+the CaDiCaL source the CNF and iCNF grammar was checked against; the other dialects
+follow their published descriptions and have no reference tool. `fixtures/` holds inputs that
 `cadical` accepts (`valid/`, `solution/`) or rejects (`invalid/`);
 `.github/scripts/check-fixtures.sh` checks that it still does.
 

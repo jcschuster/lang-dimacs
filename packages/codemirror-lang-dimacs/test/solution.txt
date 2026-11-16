@@ -43,4 +43,27 @@ s SATISFIABLE
 
 ==>
 
-Solution(⚠(v), ⚠(PositiveLiteral), ⚠(Terminator), StatusLine(s, Status))
+Solution(⚠(v), ⚠(Weight), ⚠(Weight), StatusLine(s, Status))
+
+# MaxSAT output: o lines before and after the status line {"top": "Solution"}
+
+c my solver
+o 143
+s OPTIMUM FOUND
+o 140
+v -1 2 3
+
+==>
+
+Solution(LineComment, CostLine(o, Number), StatusLine(s, Status), CostLine(o, Number),
+  ValueLine(v, NegativeLiteral, PositiveLiteral, PositiveLiteral))
+
+# QDIMACS output: s cnf and V lines {"top": "Solution"}
+
+s cnf -1 4 2
+V 1
+V -2
+
+==>
+
+Solution(StatusLine(s, Format, Status, Number, Number), ValueLine(V, PositiveLiteral), ValueLine(V, NegativeLiteral))

@@ -2,7 +2,7 @@
   "name": "lang-dimacs",
   "private": true,
   "version": "1.0.0",
-  "description": "Editor language support for DIMACS CNF as CaDiCaL reads it",
+  "description": "Editor language support for DIMACS CNF and its SAT-solver dialects",
   "scripts": {
     "build": "pnpm -r run build",
     "test": "pnpm -r test",
