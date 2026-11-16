@@ -7,6 +7,8 @@ exposes: node names and the exported JavaScript API.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-16
+
 ### Added
 
 - QDIMACS and DQDIMACS: `QuantifierSet` (`a`/`e` lines) and `DependencySet` (`d` lines)
