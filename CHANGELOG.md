@@ -7,6 +7,23 @@ exposes: node names and the exported JavaScript API.
 
 ## [Unreleased]
 
+### Added
+
+- QDIMACS and DQDIMACS: `QuantifierSet` (`a`/`e` lines) and `DependencySet` (`d` lines)
+  between a `p cnf` header and the clauses.
+- XOR clauses (`XorClause`, `x` lines) after `p cnf`.
+- KNF: `p knf` with `CardinalityConstraint` (`k <Bound> ... 0`) next to clauses.
+- WCNF: `p wcnf <vars> <clauses> <top>` and the headerless 2022 format, with
+  `WeightedClause` (`Weight`) and `HardClause` (`h`).
+- Solutions: `CostLine` (`o`), `s OPTIMUM FOUND`, QDIMACS `s cnf <answer> ...` and `V`
+  lines.
+
+### Changed
+
+- A cube (`a`) after the clauses of a `p cnf` file is now a parse error; before the
+  clauses `a` starts a quantifier set.
+- A file without a problem line parses as WCNF instead of failing.
+
 ## [0.1.1] - 2026-11-12
 
 ### Changed

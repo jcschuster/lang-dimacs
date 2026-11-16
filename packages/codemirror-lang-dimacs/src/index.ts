@@ -1,8 +1,8 @@
 import {parser} from "./dimacs.grammar"
 import {LRLanguage, LanguageSupport} from "@codemirror/language"
 
-/// DIMACS CNF as CaDiCaL reads it (`p cnf` and `p inccnf`). For solver output in the
-/// competition format, use `dimacsLanguage.configure({top: "Solution"})`.
+/// DIMACS CNF and its dialects: iCNF, QDIMACS, DQDIMACS, WCNF, KNF and XOR clauses. For
+/// solver output, use `dimacsLanguage.configure({top: "Solution"})`.
 export const dimacsLanguage = LRLanguage.define({
   name: "dimacs",
   parser,

@@ -125,18 +125,6 @@ Dimacs(ProblemLine(p, Format),
   Cube(CubeMarker, Terminator),
   Cube(CubeMarker, NegativeLiteral, Terminator))
 
-# Cubes are accepted after p cnf too (fact 7 is left to a linter)
-
-p cnf 1 1
-1 0
-a 1 0
-
-==>
-
-Dimacs(ProblemLine(p, Format, Number, Number),
-  Clause(PositiveLiteral, Terminator),
-  Cube(CubeMarker, PositiveLiteral, Terminator))
-
 # Header counts are not checked (fact 8)
 
 p cnf 1 5
@@ -165,14 +153,6 @@ p cnf 2 1
 
 Dimacs(ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, PositiveLiteral, ⚠))
 
-# Error: no problem line
-
-1 2 0
-
-==>
-
-Dimacs(⚠(PositiveLiteral), ⚠(PositiveLiteral), ⚠(Terminator))
-
 # Error: unknown format
 
 p sat 3
@@ -199,3 +179,121 @@ a 1 0
 ==>
 
 Dimacs(ProblemLine(p, Format), Cube(CubeMarker, PositiveLiteral, Terminator), Cube(⚠, PositiveLiteral, Terminator))
+
+# Error: a cube after p cnf, where a starts a quantifier set (fact 7)
+
+p cnf 1 1
+1 0
+a 1 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, Terminator), ⚠(a), Clause(PositiveLiteral, Terminator))
+
+# QDIMACS: quantifier prefix before the clauses
+
+p cnf 3 1
+e 1 0
+a 2 0
+e 3 0
+1 -2 3 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  QuantifierSet(e, PositiveLiteral, Terminator),
+  QuantifierSet(a, PositiveLiteral, Terminator),
+  QuantifierSet(e, PositiveLiteral, Terminator),
+  Clause(PositiveLiteral, NegativeLiteral, PositiveLiteral, Terminator))
+
+# DQDIMACS: d lines give an existential and its universals
+
+p cnf 4 1
+a 1 2 0
+d 3 1 0
+e 4 0
+3 4 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  QuantifierSet(a, PositiveLiteral, PositiveLiteral, Terminator),
+  DependencySet(d, PositiveLiteral, PositiveLiteral, Terminator),
+  QuantifierSet(e, PositiveLiteral, Terminator),
+  Clause(PositiveLiteral, PositiveLiteral, Terminator))
+
+# Error: a quantifier set after a clause
+
+p cnf 2 1
+1 0
+e 2 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number), Clause(PositiveLiteral, Terminator), ⚠(e), Clause(PositiveLiteral, Terminator))
+
+# XOR clauses, with or without a space after x
+
+p cnf 3 3
+1 2 0
+x1 -2 0
+x 2 3 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  Clause(PositiveLiteral, PositiveLiteral, Terminator),
+  XorClause(x, PositiveLiteral, NegativeLiteral, Terminator),
+  XorClause(x, PositiveLiteral, PositiveLiteral, Terminator))
+
+# KNF: cardinality constraints next to clauses
+
+p knf 5 2
+k 2 1 3 -5 0
+1 2 -5 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number),
+  CardinalityConstraint(k, Bound, PositiveLiteral, PositiveLiteral, NegativeLiteral, Terminator),
+  Clause(PositiveLiteral, PositiveLiteral, NegativeLiteral, Terminator))
+
+# Old WCNF: p wcnf with top, every clause weighted
+
+p wcnf 4 2 16
+16 1 -2 4 0
+8 -2 -4 0
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number, Number),
+  WeightedClause(Weight, PositiveLiteral, NegativeLiteral, PositiveLiteral, Terminator),
+  WeightedClause(Weight, NegativeLiteral, NegativeLiteral, Terminator))
+
+# New WCNF: no problem line, h marks hard clauses
+
+c comment
+h 1 2 0
+6 -1 -2 0
+
+==>
+
+Dimacs(LineComment,
+  HardClause(h, PositiveLiteral, PositiveLiteral, Terminator),
+  WeightedClause(Weight, NegativeLiteral, NegativeLiteral, Terminator))
+
+# A clause without a problem line reads as a weighted clause
+
+1 2 0
+
+==>
+
+Dimacs(WeightedClause(Weight, PositiveLiteral, Terminator))
+
+# Error: p wcnf without top (with a clause after it, its weight is read as top)
+
+p wcnf 2 1
+
+==>
+
+Dimacs(ProblemLine(p, Format, Number, Number, ⚠))

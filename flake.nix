@@ -1,5 +1,5 @@
 {
-  description = "lang-dimacs: CodeMirror language support for DIMACS CNF as CaDiCaL reads it";
+  description = "lang-dimacs: CodeMirror language support for DIMACS CNF and its SAT-solver dialects";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 

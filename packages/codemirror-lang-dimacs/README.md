@@ -1,8 +1,8 @@
 # codemirror-lang-dimacs
 
 DIMACS CNF language support for [CodeMirror 6](https://codemirror.net/): a Lezer parser
-for the dialects that [CaDiCaL](https://github.com/arminbiere/cadical) reads, with
-highlighting.
+for CNF and its SAT-solver dialects, with highlighting. One language covers them all;
+the problem line tells them apart.
 
 ```js
 import {EditorView, basicSetup} from "codemirror"
@@ -11,8 +11,7 @@ import {dimacs} from "codemirror-lang-dimacs"
 new EditorView({extensions: [basicSetup, dimacs()], parent: document.body})
 ```
 
-For solver output in the SAT competition format (`s` and `v` lines), configure the
-second top rule:
+For solver output (`s`, `v`, `o` and `V` lines), configure the second top rule:
 
 ```js
 import {LanguageSupport} from "@codemirror/language"
@@ -23,17 +22,41 @@ new LanguageSupport(dimacsLanguage.configure({top: "Solution"}))
 
 ## Scope
 
-- `p cnf <max-var> <num-clauses>` and `p inccnf` files, with comments and, after the
-  clauses, cubes (`a <literals> 0`).
-- Solutions: comments, one status line `s SATISFIABLE`, `s UNSATISFIABLE` or `s UNKNOWN`,
-  then `v` lines.
+| Dialect | Problem line | Body | Source |
+|---|---|---|---|
+| CNF | `p cnf <vars> <clauses>` | clauses | CaDiCaL 3.0.1, below |
+| iCNF | `p inccnf` | clauses, then cubes `a <literals> 0` | CaDiCaL 3.0.1, below |
+| [QDIMACS] 1.1 | `p cnf <vars> <clauses>` | quantifier sets `a`/`e <vars> 0`, then clauses | qbflib.org |
+| DQDIMACS | `p cnf <vars> <clauses>` | as QDIMACS, plus `d <var> <universals> 0` | [iDQ], [Pedant] |
+| XOR clauses | `p cnf <vars> <clauses>` | clauses and `x <literals> 0` | CryptoMiniSat `dimacsparser.h` |
+| [KNF] | `p knf <vars> <clauses>` | clauses and `k <bound> <literals> 0` | Cardinality-CDCL README |
+| WCNF, old | `p wcnf <vars> <clauses> <top>` | `<weight> <literals> 0` | [MaxSAT Evaluation 2021] |
+| WCNF, 2022 | none | `h <literals> 0` and `<weight> <literals> 0` | [MaxSAT Evaluation 2023] |
 
-Not covered: `p sat`, WCNF, QDIMACS, XOR lines, `p knf`. CaDiCaL rejects every problem
-line but `p cnf` and `p inccnf`.
+Solutions: comments, `o <cost>` lines, one status line, then `v` lines (literals) or
+`V <literal>` lines. The status is `SATISFIABLE`, `UNSATISFIABLE`, `UNKNOWN`,
+`OPTIMUM FOUND`, or QDIMACS's `s cnf <1|0|-1> <vars> <clauses>`.
+
+Quantifier sets, `d` lines and `x` lines may follow any `p cnf` header, so QDIMACS,
+DQDIMACS and XOR clauses mix freely; CNF is the case without them. A file without a
+problem line is read as 2022 WCNF, so a CNF file missing its header shows no error.
+
+Not covered: `p sat`, DRAT/LRAT proofs, the DIMACS graph and flow formats, and the
+model-counting annotations (`c p weight`, `c p show`, `c ind`), which are read as
+comments. A MaxSAT `v` line in the bit-string form (`v 0110`) parses, but as literals.
 
 The parser is permissive: it accepts any white space (space, tab, CR, LF) in the problem
-line, cubes after a `p cnf` header, and header counts that do not match the body.
-Checking those is left to a linter; this package has none.
+line, comments anywhere, header counts that do not match the body, and none of the
+semantic rules of the dialects (QDIMACS alternation and an existential innermost set,
+positive weights, `top` above the soft weights). Checking those is left to a linter;
+this package has none.
+
+[QDIMACS]: https://www.qbflib.org/qdimacs.html
+[iDQ]: https://fmv.jku.at/idq/idq_pos2014.pdf
+[Pedant]: https://github.com/fslivovsky/pedant-solver
+[KNF]: https://github.com/jreeves3/Cardinality-CDCL
+[MaxSAT Evaluation 2021]: https://maxsat-evaluations.github.io/2021/rules.html
+[MaxSAT Evaluation 2023]: https://maxsat-evaluations.github.io/2023/rules.html
 
 ## What CaDiCaL accepts
 
@@ -58,7 +81,8 @@ repository) and checked against its `cadical` binary with the files in `fixtures
    `a`, literals, `0`; an `a` before that `0` is an error. After a cube's `0` only white
    space, another `a` or the end of the file may follow, and a comment only if it runs to
    the end of the file.
-7. `a` in a `p cnf` file is an error.
+7. `a` in a `p cnf` file is an error. Here it starts a QDIMACS quantifier set, so it is
+   one after the clauses.
 8. Unless `--force` is given, the clause count must match and no literal may exceed
    `<max-var>`.
 9. A solution (`cadical -r`) is: lines starting with `c`, then exactly `s SATISFIABLE`,

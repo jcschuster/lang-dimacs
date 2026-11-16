@@ -1,21 +1,44 @@
-@top Dimacs { ProblemLine Clause* Cube* }
+// The problem line selects the dialect; new-format WCNF has none.
+@top Dimacs {
+  cnfProblem (QuantifierSet | DependencySet)* (Clause | XorClause)* |
+  inccnfProblem Clause* Cube* |
+  knfProblem (Clause | CardinalityConstraint)* |
+  wcnfProblem? (HardClause | WeightedClause)*
+}
 
-@top Solution { StatusLine ValueLine* }
+@top Solution { CostLine* StatusLine (CostLine | ValueLine)* }
 
 @skip { space | LineComment }
 
-// No comments inside the problem line: there a `c` starts `cnf`.
+// No comments inside the problem or status line: there a `c` starts `cnf`.
 @skip { space } {
-  ProblemLine { "p" (cnfFormat Number Number | inccnfFormat) }
+  cnfProblem[@name=ProblemLine] { "p" cnfFormat Number Number }
+  inccnfProblem[@name=ProblemLine] { "p" inccnfFormat }
+  knfProblem[@name=ProblemLine] { "p" knfFormat Number Number }
+  wcnfProblem[@name=ProblemLine] { "p" wcnfFormat Number Number Number }
+
+  StatusLine { "s" (Status | cnfFormat qbfAnswer Number Number) }
 }
 
 Clause { literal* Terminator }
 
 Cube { CubeMarker literal* Terminator }
 
-StatusLine { "s" Status }
+QuantifierSet { ("a" | "e") PositiveLiteral+ Terminator }
 
-ValueLine { "v" literal* Terminator? }
+DependencySet { "d" PositiveLiteral+ Terminator }
+
+XorClause { "x" literal* Terminator }
+
+CardinalityConstraint { "k" Bound literal* Terminator }
+
+HardClause { "h" literal* Terminator }
+
+WeightedClause { Weight literal* Terminator }
+
+CostLine { "o" Number }
+
+ValueLine { ("v" | "V") literal* Terminator? }
 
 literal { PositiveLiteral | NegativeLiteral }
 
@@ -28,6 +51,10 @@ literal { PositiveLiteral | NegativeLiteral }
 
   Number { $[0-9]+ }
 
+  Weight { $[0-9]+ }
+
+  Bound { $[0-9]+ }
+
   PositiveLiteral { "0"* $[1-9] $[0-9]* }
 
   NegativeLiteral { "-" "0"* $[1-9] $[0-9]* }
@@ -36,13 +63,19 @@ literal { PositiveLiteral | NegativeLiteral }
 
   CubeMarker { "a" }
 
-  Status { "SATISFIABLE" | "UNSATISFIABLE" | "UNKNOWN" }
+  Status { "SATISFIABLE" | "UNSATISFIABLE" | "UNKNOWN" | "OPTIMUM FOUND" }
+
+  qbfAnswer[@name=Status] { "1" | "0" | "-1" }
 
   cnfFormat[@name=Format] { "cnf" }
 
   inccnfFormat[@name=Format] { "inccnf" }
 
-  "p" "s" "v"
+  knfFormat[@name=Format] { "knf" }
+
+  wcnfFormat[@name=Format] { "wcnf" }
+
+  "p" "s" "v" "V" "a" "e" "d" "x" "k" "h" "o"
 }
 
 @external propSource dimacsHighlighting from "./highlight"
